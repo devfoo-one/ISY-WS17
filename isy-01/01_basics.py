@@ -29,7 +29,20 @@ print("c) (*) Drehen Sie die Werte des Vektors um (geht in einer Zeile).")
 print(vec_b[::-1])
 
 print("d) (*) Erzeugen Sie eine 4x4 Matrix mit den Werte 0 bis 15 (links oben rechts unten).")
+
+print(np.arange(0,16).reshape(4,4))
+
 print("e) (*) Erzeuge eine 8x8 Matrix mit Zufallswerte und finde deren Maximum und Minimum und normalisieren Sie die Werte (sodass alle Werte zwischen 0 und 1 liegen - ein Wert wird 1 (max) sein und einer 0 (min)).")
+
+mat_e = np.random.randint(0,255, size=(8,8))
+min_val = mat_e.min()
+max_val = mat_e.max()
+print(mat_e)
+print('min:',min_val,'max:',max_val)
+
+# TODO DEN WIRKLICHEN RANGE NORMALISIEREN(ALSO MIN = 0 und MAX = 1)
+
+
 print("f) (*) Multiplizieren Sie eine 4x3 Matrix mit einer 3x2 Matrix")
 print("g) (*) Erzeugen Sie ein 1D Array mit den Werte von 0 bis 20 und negieren Sie Werte zwischen 8 und 16 nachträglich.")
 print("h) (*) Summieren Sie alle Werte in einem Array.")
