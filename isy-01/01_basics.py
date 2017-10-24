@@ -45,8 +45,17 @@ print(mat_e_norm)
 print('\nmin:', mat_e_norm.min(), 'max:', mat_e_norm.max())
 
 print("f) (*) Multiplizieren Sie eine 4x3 Matrix mit einer 3x2 Matrix")
-print(
-    "g) (*) Erzeugen Sie ein 1D Array mit den Werte von 0 bis 20 und negieren Sie Werte zwischen 8 und 16 nachträglich.")
+
+mat4x3 = np.arange(0, 12).reshape((4, 3))
+mat3x2 = np.arange(0, 6).reshape((3, 2))
+print('4x3 Matrix:\n', mat4x3)
+print('\n3x2 Matrix:\n', mat3x2)
+print('\n', np.dot(mat4x3, mat3x2))
+
+print("g) (*) Erzeugen Sie ein 1D Array mit den Werte von 0 bis 20 und negieren Sie Werte zwischen 8 und 16 nachträglich.")
+
+print(np.arange(0,21))
+
 print("h) (*) Summieren Sie alle Werte in einem Array.")
 print("i) (** ) Erzeugen Sie eine 5x5 Matrix und geben Sie jeweils die geraden und die ungeraden Zeile aus.")
 print(
