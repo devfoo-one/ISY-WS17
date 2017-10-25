@@ -66,6 +66,14 @@ vec_h = np.arange(1,6)
 print('sum of',vec_h,'is',vec_h.sum())
 
 print("i) (** ) Erzeugen Sie eine 5x5 Matrix und geben Sie jeweils die geraden und die ungeraden Zeile aus.")
+
+mat_i = np.arange(0,25).reshape((5,5))
+print(mat_i)
+print('\nGerade Zeilen\n')
+print(mat_i[0::2])
+print('\nUngerade Zeilen\n')
+print(mat_i[1::2])
+
 print(
     "j) (** ) Erzeugen Sie eine Matrix M der Größe 4x3 und einen Vektor v mit Länge 3. Multiplizieren Sie jeden Spalteneintrag aus v mit der kompletten Spalte aus M. Schauen Sie sich dafür an, was Broadcasting in Numpy bedeutet.")
 print(
