@@ -136,7 +136,7 @@ print(
 # Should result in [3,9,15,2]T
 
 M_m = np.asmatrix(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [0, 2, 2]]))
-v0_m = np.mat([[1], [1], [0]])
+v0_m = np.array([[1], [1], [0]])
 v1_m = np.array([[-1], [2], [5]])
 
 # (np.dot(v0_m.T, v1_m)) leads to a single element two-dimensional array.
@@ -172,6 +172,10 @@ def bgr2grayscale_fast(img):
     _img = np.concatenate((bw,bw,bw), axis=2).astype(np.uint8)
     return _img
 
+M_translation = np.float32([[1,0,10],[0,1,0]])
+angle = -0.5
+M_rotation = np.float32([[np.cos(angle),-np.sin(angle),0],[np.sin(angle),np.cos(angle),0]])
+
 img = cv2.imread('images/Lenna.png')
 img_bw = bgr2grayscale_fast(img)
 display = np.concatenate((img_bw, img), axis=1)
@@ -180,6 +184,10 @@ while True:
     key = cv2.waitKey(0)
     if key == ord('q') or key == ord('Q'):
         break
+    if key == ord('r') or key == ord('R'):
+        display = cv2.warpAffine(display, M_rotation, (display.shape[1], display.shape[0]))
+    if key == ord('t') or key == ord('T'):
+        display = cv2.warpAffine(display, M_translation, (display.shape[1], display.shape[0]))
 
 cv2.destroyAllWindows()
 # (2) Now shift both images by half (translation in x) it rotate the colored image by 30 degrees using OpenCV transformation functions
