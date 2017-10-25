@@ -54,9 +54,17 @@ print('\n', np.dot(mat4x3, mat3x2))
 
 print("g) (*) Erzeugen Sie ein 1D Array mit den Werte von 0 bis 20 und negieren Sie Werte zwischen 8 und 16 nachträglich.")
 
-print(np.arange(0,21))
+vec_g = np.arange(0,21)
+for n, val in enumerate(vec_g):
+    if val >= 8 and val <= 16:
+        vec_g[n] = -val
+print(vec_g)
 
 print("h) (*) Summieren Sie alle Werte in einem Array.")
+
+vec_h = np.arange(1,6)
+print('sum of',vec_h,'is',vec_h.sum())
+
 print("i) (** ) Erzeugen Sie eine 5x5 Matrix und geben Sie jeweils die geraden und die ungeraden Zeile aus.")
 print(
     "j) (** ) Erzeugen Sie eine Matrix M der Größe 4x3 und einen Vektor v mit Länge 3. Multiplizieren Sie jeden Spalteneintrag aus v mit der kompletten Spalte aus M. Schauen Sie sich dafür an, was Broadcasting in Numpy bedeutet.")
