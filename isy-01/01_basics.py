@@ -103,6 +103,27 @@ print(mat_k_pol)
 
 print(
     "l) (***) Implementieren Sie zwei Funktionen, die das Skalarprodukt und die Vektorlänge für Vek- toren beliebiger Länge berechnen. Nutzen Sie dabei NICHT die gegebenen Funktionen von NumPy. Testen Sie Ihre Funktionen mit den gegebenen Vektoren:")
+
+# TODO: ist es relevant dass das Spaltenvektoren sind?
+
+v1 = np.array([1,2,3,4,5])
+v2 = np.array([-1,9,5,3,1])
+
+def dotproduct(vec1, vec2):
+    product = 0.
+    if vec1.shape != vec2.shape:
+        return None
+    for x1, x2 in zip(vec1, vec2):
+        product += x1*x2
+    return product
+
+def magnitude(vec):
+    return np.sqrt(dotproduct(vec,vec))
+
+print('Skalarprodukt von',v1,v2,'=',dotproduct(v1,v2))
+print('Länge von',v1,magnitude(v1))
+print('Länge von',v2,magnitude(v2))
+
 print(
     "m) (***) Berechnen Sie (v0T v1)Mv0 unter der Nutzung von NumPy Operationen. Achten Sie darauf, dass hier v0,v1 Spaltenvektoren gegeben sind. v0T ist also ein Zeilenvektor.")
 
