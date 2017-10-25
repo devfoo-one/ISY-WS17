@@ -85,12 +85,26 @@ print(M * v,'\n------\n')
 
 print(
     "k) (** ) Erzeugen Sie einen Zufallsmatrix der Größe 10x2, die Sie als Kartesische Koordinaten interpretieren können ([[x0, y0],[x1, y1],[x2, y2]]). Konvertieren Sie diese in Polarkoordinaten https://de.wikipedia.org/wiki/Polarkoordinaten.")
+
+def cart2pol(x,y):
+    # https://www.w3resource.com/python-exercises/numpy/python-numpy-random-exercise-14.php
+    r = np.sqrt(x**2 + y**2)
+    theta = np.arctan2(y,x) # arctan2 automatically chooses the right quadrant
+    return np.array([r,theta])
+
+mat_k_cart = np.random.randint(0, 255, size=(10, 2))
+mat_k_pol = np.empty_like(mat_k_cart, dtype=np.float32)
+
+for n,(x,y) in enumerate(mat_k_cart[:]):
+    mat_k_pol[n] = cart2pol(x,y)
+
+print(mat_k_cart)
+print(mat_k_pol)
+
 print(
     "l) (***) Implementieren Sie zwei Funktionen, die das Skalarprodukt und die Vektorlänge für Vek- toren beliebiger Länge berechnen. Nutzen Sie dabei NICHT die gegebenen Funktionen von NumPy. Testen Sie Ihre Funktionen mit den gegebenen Vektoren:")
 print(
     "m) (***) Berechnen Sie (v0T v1)Mv0 unter der Nutzung von NumPy Operationen. Achten Sie darauf, dass hier v0,v1 Spaltenvektoren gegeben sind. v0T ist also ein Zeilenvektor.")
-
-print(np.float32([0.1, 0.1]))
 
 ######################################################################
 # A2. OpenCV and Transformation and Computer Vision Basic
