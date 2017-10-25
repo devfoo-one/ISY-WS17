@@ -76,6 +76,13 @@ print(mat_i[1::2])
 
 print(
     "j) (** ) Erzeugen Sie eine Matrix M der Größe 4x3 und einen Vektor v mit Länge 3. Multiplizieren Sie jeden Spalteneintrag aus v mit der kompletten Spalte aus M. Schauen Sie sich dafür an, was Broadcasting in Numpy bedeutet.")
+
+M = np.arange(0,12).reshape(4,3)
+v = np.arange(2,5)
+print(M,'\n------\n')
+print(v,'\n------\n')
+print(M * v,'\n------\n')
+
 print(
     "k) (** ) Erzeugen Sie einen Zufallsmatrix der Größe 10x2, die Sie als Kartesische Koordinaten interpretieren können ([[x0, y0],[x1, y1],[x2, y2]]). Konvertieren Sie diese in Polarkoordinaten https://de.wikipedia.org/wiki/Polarkoordinaten.")
 print(
