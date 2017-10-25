@@ -140,9 +140,9 @@ v0_m = np.mat([[1], [1], [0]])
 v1_m = np.array([[-1], [2], [5]])
 
 # (np.dot(v0_m.T, v1_m)) leads to a single element two-dimensional array.
-#  Broadcasting does not help there. It needs to get casted to a float value because mp.dot or other matrix
+#  Broadcasting does not help there. It needs to get casted to a scalar because mp.dot or other matrix
 #  multiplication featues do not recognize an single element matrix as a scalar.
-print(float(np.dot(v0_m.T, v1_m)) * M_m * v0_m)
+print(np.asscalar(np.dot(v0_m.T, v1_m)) * M_m * v0_m)
 
 
 
