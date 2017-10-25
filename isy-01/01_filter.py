@@ -76,12 +76,13 @@ if __name__ == "__main__":
 
     sobel_x = convolution_2d(img_norm, sobelmask_x)
     sobel_y = convolution_2d(img_norm, sobelmask_y)
-
+    gaussian = convolution_2d(img_norm, make_gaussian(size=5))
     # 4. compute magnitude of gradients
 
     # Show resulting images
     cv2.imshow("sobel_x", sobel_x)
     cv2.imshow("sobel_y", sobel_y)
+    cv2.imshow("gaussian", gaussian)
     # cv2.imshow("mog", mog)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
