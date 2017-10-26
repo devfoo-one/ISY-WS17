@@ -15,12 +15,23 @@ while (True):
         print('MODE 2 - HSV')
         mode = 2
     if ch == ord('3'):
-        print('MODE 2 - LAB')
+        print('MODE 3 - LAB')
         mode = 3
     if ch == ord('4'):
-        print('MODE 2 - YUV')
+        print('MODE 4 - YUV')
         mode = 4
-    # ...
+    if ch == ord('5'):
+        print('MODE 5 - Adaptive Thresholding (Gausian)')
+        mode = 5
+    if ch == ord('6'):
+        print('MODE 6 - Adaptive Thresholding (Otsu)')
+        mode = 6
+    if ch == ord('7'):
+        print('MODE 7 - Adaptive Thresholding (Otsu) with Gaussian Blur')
+        mode = 7
+    if ch == ord('8'):
+        print('MODE 8 - Canny Edge Detection')
+        mode = 8
 
     if ch == ord('q'):
         break
@@ -35,6 +46,23 @@ while (True):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
     if mode == 4:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2YUV)
+    if mode == 5:
+        # https://docs.opencv.org/trunk/d7/d4d/tutorial_py_thresholding.html
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2GRAY)
+        frame = cv2.adaptiveThreshold(frame, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+    if mode == 6:
+        # https://docs.opencv.org/trunk/d7/d4d/tutorial_py_thresholding.html
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2GRAY)
+        ret, frame = cv2.threshold(frame,0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    if mode == 7:
+        # https://docs.opencv.org/trunk/d7/d4d/tutorial_py_thresholding.html
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2GRAY)
+        frame = cv2.GaussianBlur(frame, (5,5), cv2.BORDER_REPLICATE)
+        ret, frame = cv2.threshold(frame,0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    if mode == 8:
+        # TODO implement me
+        None
+
 
     # Display the resulting frame
     cv2.imshow('frame', frame)
