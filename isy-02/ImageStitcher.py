@@ -107,12 +107,12 @@ class ImageStitcher:
         h_ = int(h / w * width)
         return cv2.resize(img, (width, h_))
 
-    def stitch_to_panorama(self):
+    def stitch_to_panorama(self, target_width=1000):
 
         # YOUR CODE HERE
         matchList = []
         baseImage = self.imagelist[0]
-        panoramaImg = np.zeros((3000, baseImage.shape[1] * 2, 3), dtype=np.uint8)  ## TODO: adjust size
+        panoramaImg = np.zeros((baseImage.shape[0] * 6, baseImage.shape[1] * 6, 3), dtype=np.uint8)
         panoramaImg[0:baseImage.shape[0], 0:baseImage.shape[1]] = baseImage
 
         # 1. create feature extraction
@@ -130,9 +130,10 @@ class ImageStitcher:
                 # if not enough matches were found we can't stitch and we break here
                 break
             else:
+                img_h, img_w = img.shape[:2]
                 matchImg = self.draw_matches(baseImage, img, kp, kp2, matches, status)
-                matchList.append(self.scale_to_width(matchImg, 1000))
-                warpedImg = cv2.warpPerspective(img, H, (2000, 2000), flags=cv2.WARP_INVERSE_MAP)
+                matchList.append(self.scale_to_width(matchImg, target_width))
+                warpedImg = cv2.warpPerspective(img, H, (img_h * 4, img_w * 4), flags=cv2.WARP_INVERSE_MAP)
                 panoramaImg[0:warpedImg.shape[0], 0:warpedImg.shape[1]] += warpedImg
 
 
@@ -150,5 +151,6 @@ class ImageStitcher:
         # 6. return the resulting stitched image
 
         panoramaImg = self.crop_black(panoramaImg)
-        panoramaImg = self.scale_to_width(panoramaImg, 1000)
+        panoramaImg = panoramaImg[0:baseImage.shape[0]]
+        panoramaImg = self.scale_to_width(panoramaImg, target_width)
         return (matchList, panoramaImg)
