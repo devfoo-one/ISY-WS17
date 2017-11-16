@@ -112,17 +112,16 @@ class ImageStitcher:
         # YOUR CODE HERE
         matchList = []
         baseImage = self.imagelist[0]
-        panoramaImg = np.zeros((baseImage.shape[0] * 6, baseImage.shape[1] * 6, 3), dtype=np.uint8)
-        panoramaImg[0:baseImage.shape[0], 0:baseImage.shape[1]] = baseImage
+        warpedImg = None
 
         # 1. create feature extraction
         sift = cv2.xfeatures2d.SIFT_create()
 
         # 2. detect and compute keypoints and descriptors for the first image
-        kp, desc = sift.detectAndCompute(baseImage, None)
 
         # 3. loop through the remaining images and detect and compute keypoints + descriptors
         for img in self.imagelist[1:]:
+            kp, desc = sift.detectAndCompute(baseImage, None)
             kp2, desc2 = sift.detectAndCompute(img, None)
             # 4. match features between the two images consecutive images and check if the result might be None.
             H, status, matches = self.match_keypoints(kp, kp2, desc, desc2)
@@ -130,12 +129,12 @@ class ImageStitcher:
                 # if not enough matches were found we can't stitch and we break here
                 break
             else:
-                img_h, img_w = img.shape[:2]
+                img_h, img_w = baseImage.shape[:2]
                 matchImg = self.draw_matches(baseImage, img, kp, kp2, matches, status)
                 matchList.append(self.scale_to_width(matchImg, target_width))
-                warpedImg = cv2.warpPerspective(img, H, (img_h * 4, img_w * 4), flags=cv2.WARP_INVERSE_MAP)
-                panoramaImg[0:warpedImg.shape[0], 0:warpedImg.shape[1]] += warpedImg
-
+                warpedImg = cv2.warpPerspective(baseImage, H, (img_w * 2, img_h))
+                warpedImg[0:img.shape[0]:, 0:img.shape[1]] = img
+                baseImage = warpedImg
 
                 # The result contains matches and a status object that can be used to draw the matches.
                 # Additionally (and more importantly it contains the transformation matrix (homography matrix)
@@ -150,7 +149,6 @@ class ImageStitcher:
 
         # 6. return the resulting stitched image
 
-        panoramaImg = self.crop_black(panoramaImg)
-        panoramaImg = panoramaImg[0:baseImage.shape[0]]
-        panoramaImg = self.scale_to_width(panoramaImg, target_width)
-        return (matchList, panoramaImg)
+        warpedImg = self.crop_black(warpedImg)
+        warpedImg = self.scale_to_width(warpedImg, target_width)
+        return (matchList, warpedImg)

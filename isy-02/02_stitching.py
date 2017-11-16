@@ -20,7 +20,7 @@ pano1 = cv2.imread('images/pano1.jpg')
 
 # order of input images is important is important (from right to left)
 # imageStitcher = ImageStitcher([pano4, pano5, pano6]) # list of images
-imageStitcher = ImageStitcher([pano1, pano2, pano3])  # list of images
+imageStitcher = ImageStitcher([pano3, pano2, pano1])  # list of images
 (matchlist, result) = imageStitcher.stitch_to_panorama()
 
 if not matchlist:
