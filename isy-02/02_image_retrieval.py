@@ -1,7 +1,8 @@
+from queue import PriorityQueue
+
 import cv2
 import glob
 import numpy as np
-from asyncio import PriorityQueue
 
 
 ############################################################
@@ -19,14 +20,14 @@ def distance(a, b):
     for vec_a, vec_b in zip(a, b):
         for elem_a, elem_b in zip(vec_a,vec_b):
             dist += (elem_a - elem_b)**2
-    return np.sqrt(dist)
+    return int(np.sqrt(dist))
 
 def create_keypoints(w, h):
     keypoints = []
     keypointSize = 11
 
     # YOUR CODE HERE
-    stepsN = 11
+    stepsN = 11 # how many grid elements should the uniform grid have?
     stepSize = 1.0 / stepsN
     stepFactors = np.arange(stepSize, 1.0, stepSize)
     for f_w in stepFactors:
@@ -51,7 +52,6 @@ images = []
 for path in images_paths:
     img = cv2.imread(path)
     descriptors = getDescriptor(img)
-    # images.append((img, descriptors))
     images.append((img, getDescriptor(img)))
 
 queries = []
@@ -64,21 +64,20 @@ for queryImage, queryDescriptor in queries: # TODO: DEBUG FILTER
     q = PriorityQueue()
     cv2.imshow('query', queryImage)  # TODO: RMD
     for image, descriptor in images:
+        # 4. use one of the query input image to query the 'image database' that
+        #    now compress to a single area. Therefore extract the descriptor and
+        #    compare the descriptor to each image in the database using the L2-norm
+        #    and save the result into a priority queue (q = PriorityQueue())
         dist = distance(queryDescriptor, descriptor)
-        q.put((image, dist))  #TODO: BUG, this adds nothing!
+        q.put((dist, image))  #TODO: BUG, this adds nothing!
+
+    # 5. output (save and/or display) the query results in the order of smallest distance
 
     while not q.empty():
-        cv2.imshow('candidate', q.get())
+        dist, img = q.get()
+        cv2.imshow('candidate', img)
         cv2.waitKey(0)
 
 
-# 4. use one of the query input image to query the 'image database' that
-#    now compress to a single area. Therefore extract the descriptor and
-#    compare the descriptor to each image in the database using the L2-norm
-#    and save the result into a priority queue (q = PriorityQueue())
 
-# YOUR CODE HERE
 
-# 5. output (save and/or display) the query results in the order of smallest distance
-
-# YOUR CODE HERE
