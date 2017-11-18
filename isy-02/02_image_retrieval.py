@@ -52,28 +52,20 @@ def getFancyResultImage(queryImage, rankedCandidates):
     # assume that images are squares
     destinationHeight = 200
     fancyImage = cv2.resize(queryImage, (destinationHeight, destinationHeight))
-
     rankedList = []
     while not rankedCandidates.empty():
-        _, img = rankedCandidates.get() # TODO: BUG: CRASHES AT 3th QUERY WITH
-        # TODO: ValueError: operands could not be broadcast together with shapes (256,256,3) (255,256,3)
-
+        _, _, img = rankedCandidates.get()
         rankedList.append(cv2.resize(img, (int(destinationHeight / 2), int(destinationHeight / 2))))
-
     # add a black image to avoid IndexError
     rankedList.append(np.zeros((int(destinationHeight / 2), int(destinationHeight / 2), 3), dtype=np.uint8))
-
     results = np.zeros((destinationHeight, 0, 3), dtype=np.uint8)
-
     for i in range(0, int(len(rankedList) / 2)):
         topImg = rankedList[i]
         bottomImg = rankedList[i + int(len(rankedList) / 2)]
         block = np.concatenate((topImg, bottomImg), axis=0)
         results = np.concatenate((results, block), axis=1)
-
     fancyImage = np.concatenate((fancyImage, results), axis=1)
     return fancyImage
-
 
 
 # 1. preprocessing and load
@@ -92,16 +84,15 @@ for query_path in glob.glob('./images/db/*.jpg'):
 
 for queryImage, queryDescriptor in queries:
     rankedCandidates = PriorityQueue()
-    cv2.imshow('query', queryImage)  # TODO: RMD
-    for image, descriptor in images:
+    # PriorityQueue seems to crash if prio values are not distinct. So i intruduced a counter.
+    # https://stackoverflow.com/questions/9289614/how-to-put-items-into-priority-queues
+    for i, (image, descriptor) in enumerate(images):
         # 4. use one of the query input image to query the 'image database' that
         #    now compress to a single area. Therefore extract the descriptor and
         #    compare the descriptor to each image in the database using the L2-norm
         #    and save the result into a priority queue (q = PriorityQueue())
         dist = distance(queryDescriptor, descriptor)
-        rankedCandidates.put((dist, image))
-
+        rankedCandidates.put((dist, i, image))
     # 5. output (save and/or display) the query results in the order of smallest distance
     cv2.imshow('Fancy Result', getFancyResultImage(queryImage, rankedCandidates))
     cv2.waitKey(0)
-#
