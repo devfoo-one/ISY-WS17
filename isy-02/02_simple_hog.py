@@ -57,8 +57,8 @@ def compute_simple_hog(imgcolor, keypoints):
         sobel_y_window_nonzero = sobel_y_window[np.nonzero(mog_window)]
         angle = cv2.phase(sobel_x_window_nonzero, sobel_y_window_nonzero)
 
-        (hist, bins) = np.histogram(angle, bins=8, range=(0.0, 2 * np.pi))
-        hist = normalize(hist)
+        (hist, bins) = np.histogram(angle, bins=8, range=(0.0, 2 * np.pi), density=True)
+        # hist = normalize(hist)
         plot_histogram(hist, bins)
         descr[count] = hist
 
@@ -69,9 +69,9 @@ keypoints = [cv2.KeyPoint(15, 15, 11)]
 
 # test for all test images
 testImages = []
-testImages.append(cv2.imread('./images/hog_test/diag.jpg'))
-testImages.append(cv2.imread('./images/hog_test/horiz.jpg'))
+# testImages.append(cv2.imread('./images/hog_test/diag.jpg'))
+# testImages.append(cv2.imread('./images/hog_test/horiz.jpg'))
 testImages.append(cv2.imread('./images/hog_test/vert.jpg'))
-testImages.append(cv2.imread('./images/hog_test/circle.jpg'))
+# testImages.append(cv2.imread('./images/hog_test/circle.jpg'))
 for test in testImages:
     descriptor = compute_simple_hog(test, keypoints)
