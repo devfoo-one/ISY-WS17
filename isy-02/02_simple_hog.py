@@ -33,8 +33,8 @@ def compute_simple_hog(imgcolor, keypoints):
     sobel_x = cv2.Sobel(imggray, cv2.CV_64F, 1, 0)
     sobel_y = cv2.Sobel(imggray, cv2.CV_64F, 0, 1)
     # compute magnitude and angle of the gradients
-    mog = np.uint8(np.sqrt(sobel_x ** 2 + sobel_y ** 2))
-    imshow(mog) # TODO RMD
+    mog = cv2.magnitude(sobel_x, sobel_y)
+    imshow(np.uint8(mog)) # TODO RMD
 
     # go through all keypoints and and compute feature vector
     descr = np.zeros((len(keypoints), 8), np.float32)
