@@ -34,7 +34,7 @@ corner[2][2] = 0.0
 flat = np.zeros((3, 3, 1), np.float32)
 
 # choose which one to use to compute eigenvector / eigenvalues
-img = edge
+img = corner
 
 # simple gradient extraction
 k = np.matrix([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
@@ -43,7 +43,7 @@ ktrans = k.transpose()
 Gx = cv2.filter2D(img, -1, k)
 Gy = cv2.filter2D(img, -1, ktrans)
 
-#print "dx / dy", Gx, Gy
+# print("dx / dy", Gx, Gy)
 
 # this is the 2x2 matrix we need to evaluate
 # the Harris corners
@@ -52,10 +52,22 @@ eigMat = np.zeros((2, 2), np.float32)
 # compute values for matrix eigMat and fill matrix with
 # necessary values
 
-# YOUR CODE HERE
+# https://www.youtube.com/watch?v=vkWdzWeRfC4
+# https://courses.cs.washington.edu/courses/cse455/16wi/notes/6_InterestOperators.pdf
+# TODO: Die Frage ist jetzt ob Ix, Iy die Summe der Gx und Gy ist.. in meiner Welt schon, da es ja nur die Intensität der
+# 1. Ableitung auf der jeweiligen Achse widerspiegeln soll.
+
+Ix = np.sum(Gx)
+Iy = np.sum(Gy)
+eigMat[0][0] = Ix ** 2
+eigMat[0][1] = Ix * Iy
+eigMat[1][0] = Ix * Iy
+eigMat[1][1] = Iy ** 2
 
 # compute eigenvectors and eigenvalues using the numpy
 # linear algebra package
+
+w, v = np.linalg.eig(eigMat)
 
 # YOUR CODE HERE
 
@@ -64,7 +76,5 @@ print("matrix:", eigMat, '\n')
 print("eigvalues", w, "eigenvecv", v)
 scaling_factor = 100
 img = cv2.resize(img, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
-cv2.imshow('img', img)
-cv2.waitKey(0)
-
-
+# cv2.imshow('img', img)
+# cv2.waitKey(0)
