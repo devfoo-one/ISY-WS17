@@ -54,9 +54,10 @@ eigMat = np.zeros((2, 2), np.float32)
 
 # https://www.youtube.com/watch?v=vkWdzWeRfC4
 # https://courses.cs.washington.edu/courses/cse455/16wi/notes/6_InterestOperators.pdf
+
 # TODO: Die Frage ist jetzt ob Ix, Iy die Summe der Gx und Gy ist.. in meiner Welt schon, da es ja nur die Intensität der
 # 1. Ableitung auf der jeweiligen Achse widerspiegeln soll.
-
+# Zitat: "...where M is a 2×2 matrix computed from image derivatives..." also müsste sollte das hier richtig sein.
 Ix = np.sum(Gx)
 Iy = np.sum(Gy)
 eigMat[0][0] = Ix ** 2
@@ -76,5 +77,5 @@ print("matrix:", eigMat, '\n')
 print("eigvalues", w, "eigenvecv", v)
 scaling_factor = 100
 img = cv2.resize(img, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
-# cv2.imshow('img', img)
-# cv2.waitKey(0)
+cv2.imshow('img', img)
+cv2.waitKey(0)
