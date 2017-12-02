@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import math
 import matplotlib
@@ -86,20 +88,47 @@ class Ransac:
         self.current_inliers = []
         score = 0
         idx = 0
-
+        p0 = np.zeros((2,1))
+        p1 = np.zeros((2,1))
         # sample two random points from point set
+        while p0[0] == p1[0] and p0[1] == p1[1]:  # make sure that p0 != p1
+            i0 = np.random.randint(0, self.points.shape[1])
+            i1 = np.random.randint(0, self.points.shape[1])
+            p0 = self.points[0:,i0]
+            p1 = self.points[0:,i1]
+
 
         # compute line parameters m / b and create new line
 
+        m = (p1[1] - p0[1]) / (p1[0] - p0[0]) # m = delta_y / delta_x
+        b = p0[1] - m * p0[0] # b = y - mx
+        line = Line(m, b)
 
         # loop over all points
-        # compute error of all points and add to inliers of
-        # err smaller than threshold update score, otherwise add error/threshold to score
+        for index in range(0, self.points.shape[1]):
+        # for index, p in enumerate(self.points):  # TODO: WRONG ITERATION
+            if index == i0 or index == i1:  # make sure that p0 or p1 will not be used
+                continue
+            p = self.points[0:,index]
+            error = self.estimate_error(p, line)
+            if error < self.threshold:
+                self.current_inliers.append(p)
+                score -= error  # TODO: FIX SCORING
+                print(error)
+            else:
+                score += error / self.threshold
+            # TODO: WHAT SCORE? WHY NOT ONLY LEN(INLIERS)?
+            # compute error of all points and add to inliers of # TODO: ???? WHAT?
+            # err smaller than threshold update score, otherwise add error/threshold to score
 
         # if score < self.bestScore: update the best model/inliers/score
+        if score < self.best_score:
+            self.best_score = score
+            self.best_model = Line(m, b)
+            self.best_inliers = self.current_inliers
         # please do look at resources in the internet :)
 
-        #print iter, "  :::::::::: bestscore: ", self.best_score, " bestModel: ", self.best_model.m, self.best_model.b
+        print(iter, "  :::::::::: bestscore: ", self.best_score, " bestModel: ", self.best_model.m, self.best_model.b)
 
     def run(self):
         """
@@ -110,11 +139,12 @@ class Ransac:
             self.step(i)
 
 
-rpg = RansacPointGenerator(100,45)
+rpg = RansacPointGenerator(100,200)
+# rpg = RansacPointGenerator(100,45)
 print(rpg.points)
 
 ransac = Ransac(rpg.points, 0.05)
-#ransac.run()
+ransac.run()
 
 # print rpg.points.shape[1]
 plt.plot(rpg.points[0,:], rpg.points[1,:], 'ro')
