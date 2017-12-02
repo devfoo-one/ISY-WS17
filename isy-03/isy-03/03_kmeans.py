@@ -14,7 +14,7 @@ import sys
 
 # implement distance metric - e.g. squared distances between pixels
 def distance(a, b):
-    dist = 0.0 # TODO: use floats [0:1] and cast them to uints [0:255] when needed
+    dist = 0.0
     for elem_a, elem_b in zip(a, b):
         dist += (elem_a - elem_b) ** 2
     return int(np.sqrt(dist))
@@ -60,7 +60,7 @@ def initialize(img):
     """inittialize the current_cluster_centers array for each cluster with a random pixel position"""
     h, w = img.shape[:2]
     rand_h = int(h * np.random.random())
-    rand_w = int(w * np.random.random())
+    rand_w = int(h * np.random.random())
     return img[rand_h][rand_w] # return color at random pixel position
 
 
@@ -117,7 +117,7 @@ def kmeans(img, current_cluster_centers, update_mean_values = True): # Tom: I do
     return result
 
 # num of cluster
-numclusters = 6
+numclusters = 3
 # corresponding colors for each cluster
 cluster_colors = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [0, 255, 255], [255, 255, 255], [0, 0, 0], [128, 128, 128]]
 # initialize current cluster centers (i.e. the pixels that represent a cluster center)
@@ -129,13 +129,20 @@ scaling_factor = 0.5
 imgraw = cv2.resize(imgraw, None, fx=scaling_factor, fy=scaling_factor, interpolation=cv2.INTER_AREA)
 
 
-# TODO: compare different color spaces and their result for clustering
-# TODO: YOUR CODE HERE or keep going with loaded RGB colorspace img = imgraw
+# compare different color spaces and their result for clustering
+# YOUR CODE HERE or keep going with loaded RGB colorspace img = imgraw
+
 image = imgraw
+# image = cv2.cvtColor(imgraw, cv2.COLOR_BGR2HSV)
+# image = cv2.cvtColor(imgraw, cv2.COLOR_BGR2LAB)
+# image = cv2.cvtColor(imgraw, cv2.COLOR_BGR2YUV)
+
 del imgraw # make shure that no usage of imgraw occurs
+
 for i in range(0, numclusters):
     current_cluster_centers[i] = initialize(image)
     # current_cluster_centers[i] = cluster_colors[i] # use cluster_colors
+    # TODO: make shure that we use n different cluster centers!
 
 h1, w1 = image.shape[:2]
 
