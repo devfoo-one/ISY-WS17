@@ -64,7 +64,7 @@ def initialize(img):
     return img[rand_h][rand_w] # return color at random pixel position
 
 
-def kmeans(img, current_cluster_centers): # Tom: I don´t wanna read my stuff out of global scope
+def kmeans(img, current_cluster_centers, update_mean_values = True): # Tom: I don´t wanna read my stuff out of global scope
     """Main k-means function iterating over max_iterations and stopping if
     the error rate of change is less then 2% for consecutive iterations, i.e. the
     algorithm converges. In our case the overall error might go up and down a little
@@ -107,7 +107,8 @@ def kmeans(img, current_cluster_centers): # Tom: I don´t wanna read my stuff ou
         change_rate = changes / (w1*h1)
         print('Change rate: ', change_rate)
         overallError = assign_to_current_mean(img, result, clustermask, current_cluster_centers)
-        update_mean(img, clustermask, current_cluster_centers)
+        if update_mean_values:
+            update_mean(img, clustermask, current_cluster_centers)
         print('Error: ', overallError)
         i+=1
 
@@ -118,7 +119,7 @@ def kmeans(img, current_cluster_centers): # Tom: I don´t wanna read my stuff ou
 # num of cluster
 numclusters = 6
 # corresponding colors for each cluster
-# cluster_colors = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [0, 255, 255], [255, 255, 255], [0, 0, 0], [128, 128, 128]]
+cluster_colors = [[255, 0, 0], [0, 255, 0], [0, 0, 255], [0, 255, 255], [255, 255, 255], [0, 0, 0], [128, 128, 128]]
 # initialize current cluster centers (i.e. the pixels that represent a cluster center)
 current_cluster_centers = np.zeros((numclusters, 1, 3), np.float32)
 
@@ -134,6 +135,7 @@ image = imgraw
 del imgraw # make shure that no usage of imgraw occurs
 for i in range(0, numclusters):
     current_cluster_centers[i] = initialize(image)
+    # current_cluster_centers[i] = cluster_colors[i] # use cluster_colors
 
 h1, w1 = image.shape[:2]
 
@@ -141,6 +143,7 @@ h1, w1 = image.shape[:2]
 # it returns a result image where each pixel is color with one of the cluster_colors
 # depending on its cluster assignment
 res = kmeans(image, current_cluster_centers)
+# res = kmeans(image, current_cluster_centers, update_mean_values=False) # use cluster_colors
 
 h1, w1 = res.shape[:2]
 h2, w2 = image.shape[:2]
