@@ -87,7 +87,7 @@ class Ransac:
         """
         self.current_inliers = []
         score = 0
-        idx = 0
+        idx = 0  # TODO: What is this for?
         p0 = np.zeros((2,1))
         p1 = np.zeros((2,1))
         # sample two random points from point set
@@ -106,23 +106,20 @@ class Ransac:
 
         # loop over all points
         for index in range(0, self.points.shape[1]):
-        # for index, p in enumerate(self.points):  # TODO: WRONG ITERATION
             if index == i0 or index == i1:  # make sure that p0 or p1 will not be used
                 continue
             p = self.points[0:,index]
             error = self.estimate_error(p, line)
+            score += error
             if error < self.threshold:
                 self.current_inliers.append(p)
-                score -= error  # TODO: FIX SCORING
-                print(error)
-            else:
-                score += error / self.threshold
-            # TODO: WHAT SCORE? WHY NOT ONLY LEN(INLIERS)?
-            # compute error of all points and add to inliers of # TODO: ???? WHAT?
+            # compute error of all points and add to inliers of
             # err smaller than threshold update score, otherwise add error/threshold to score
 
         # if score < self.bestScore: update the best model/inliers/score
-        if score < self.best_score:
+        if len(self.current_inliers) > len(self.best_inliers):
+            # Tom: I don´t know why i should use the score instead of the current_inliers cardinality
+            # the original RANSAC publication also uses the cardinality
             self.best_score = score
             self.best_model = Line(m, b)
             self.best_inliers = self.current_inliers
@@ -139,19 +136,30 @@ class Ransac:
             self.step(i)
 
 
-rpg = RansacPointGenerator(100,200)
-# rpg = RansacPointGenerator(100,45)
-print(rpg.points)
+rpgs = []
+rpgs.append(RansacPointGenerator(100,0))
+rpgs.append(RansacPointGenerator(100,200))
+rpgs.append(RansacPointGenerator(200,100))
+rpgs.append(RansacPointGenerator(50,300))
+ransac_thresholds = []
+ransac_thresholds.append(0.5)
+ransac_thresholds.append(0.2)
+ransac_thresholds.append(0.05)
+ransac_thresholds.append(0.01)
 
-ransac = Ransac(rpg.points, 0.05)
-ransac.run()
+for rpg_i, rpg in enumerate(rpgs):
+    for threshold_i, ransac_threshold in enumerate(ransac_thresholds):
 
-# print rpg.points.shape[1]
-plt.plot(rpg.points[0,:], rpg.points[1,:], 'ro')
-m = ransac.best_model.m
-b = ransac.best_model.b
-plt.plot([0, 1], [m*0 + b, m*1+b], color='k', linestyle='-', linewidth=2)
-# #
-plt.axis([0, 1, 0, 1])
+        ransac = Ransac(rpg.points, ransac_threshold)
+        ransac.run()
+
+        # print rpg.points.shape[1]
+        plt.subplot(len(rpgs), len(ransac_thresholds), (len(rpgs) * rpg_i + threshold_i) + 1 ).set_title('thresh: {0} in: {1} out: {2}'.format(ransac_threshold, rpg.numpointsInlier, rpg.numpointsOutlier))
+        plt.plot(rpg.points[0,:], rpg.points[1,:], 'ro')
+        m = ransac.best_model.m
+        b = ransac.best_model.b
+        plt.plot([0, 1], [m*0 + b, m*1+b], color='k', linestyle='-', linewidth=2)
+        # #
+        plt.axis([0, 1, 0, 1])
+
 plt.show()
-
