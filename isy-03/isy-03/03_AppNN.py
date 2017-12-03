@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 
+
 def draw_matches(img1, img2, kp1, kp2, matches):
     """For each pair of points we draw a line between both images and circles,
     then connect a line between them.
@@ -36,16 +37,16 @@ _, frame = cap.read()
 # refImg = cv2.resize(refImg, (frame.shape[1], frame.shape[0]))
 sift = cv2.xfeatures2d.SIFT_create()
 bf = cv2.BFMatcher()
+refImg_kp, refImg_descriptors = sift.detectAndCompute(refImg, None)
 
 while True:
     _, frame = cap.read()
-    refImg_kp, refImg_descriptors = sift.detectAndCompute(refImg, None)
     frame_kp, frame_descriptors = sift.detectAndCompute(frame, None)
-    if refImg_descriptors is None or frame_descriptors == None  :
+    if refImg_descriptors is None or frame_descriptors == None:
         continue
     raw_matches = bf.knnMatch(refImg_descriptors, frame_descriptors, k=2)
     matches = []
-    distanceRatio = 0.75 # taken from ImageStitcher
+    distanceRatio = 0.75  # taken from ImageStitcher
     for m in raw_matches:
         # ensure the distance is within a certain ratio of each
         # other (i.e. David Lowe's ratio = 0.75)
