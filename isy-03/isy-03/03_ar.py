@@ -13,9 +13,13 @@ searchParams = dict(checks=50)
 # flann = cv2.FlannBasedMatcher(indexParams, {})
 # so we use the alternative but slower Brute-Force Matcher BFMatcher
 # YOUR CODE
+sift = cv2.xfeatures2d.SIFT_create()
+bf = cv2.BFMatcher()
 
 # extract marker descriptors
 # YOUR CODE
+markerImg = cv2.imread('images/marker.jpg')
+keypointsMarker, descriptorsMarker = sift.detectAndCompute(markerImg, None)
 
 def render_virtual_object(img, x_start, y_start, x_end, y_end, quad):
 
@@ -69,9 +73,13 @@ cap = cv2.VideoCapture(0)
 cv2.namedWindow('Interactive Systems: AR Tracking')
 while True:
     # YOUR CODE
-
+    _, vis = cap.read()
     # detect and compute descriptor in camera image
+    keypointsFrame, descriptorsFrame = sift.detectAndCompute(vis, None)
+    if descriptorsMarker is None or descriptorsFrame == None:
+        continue
     # and match with marker descriptor
+    matches = bf.knnMatch(descriptorsFrame, descriptorsMarker, k=2)
 
     # filter matches by distance [Lowe2004]
     matches = [match[0] for match in matches if len(match) == 2 and
@@ -98,17 +106,20 @@ while True:
     # H - homography matrix
     # status - status about inliers and outliers for the plane mapping
     # YOUR CODE
+    (H, status) = cv2.findHomography(p0, p1, cv2.RANSAC, 4.0)
 
     # on the basis of the status object we can now filter RANSAC outliers
-    mask = mask.ravel() != 0
+    mask = status.ravel() != 0
     if mask.sum() < min_matches:
         cv2.imshow('Interactive Systems: AR Tracking', vis)
         continue
 
     # take only inliers - mask of Outlier/Inlier
-    # p0, p1 = p0[mask], p1[mask]
+    p0, p1 = p0[mask], p1[mask]
+
     # get the size of the marker and form a quad in pixel coords np float array using w/h as the corner points
     # YOUR CODE HERE
+    # TODO HIER WEITER
 
     # perspectiveTransform needs a 3-dimensional array
     quad = np.array([quad])
