@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 
-
 # global constants
 min_matches = 10
 FLANN_INDEX_KDTREE = 0
@@ -21,21 +20,21 @@ bf = cv2.BFMatcher()
 markerImg = cv2.imread('images/marker.jpg')
 keypointsMarker, descriptorsMarker = sift.detectAndCompute(markerImg, None)
 
-def render_virtual_object(img, x_start, y_start, x_end, y_end, quad):
 
+def render_virtual_object(img, x_start, y_start, x_end, y_end, quad):
     # define vertices, edges and colors of your 3D object, e.g. cube
 
     # YOUR CODE HERE
     z_offset = 1
     vertices = np.float32([
-        [x_start, y_start, 0],  #0
-        [1, y_start, 0],    #1
-        [1, 1, 0],      #2
-        [x_start, 1, 0],    #3
-        [x_start, y_start, z_offset],  #4
-        [1, y_start, z_offset],    #5
-        [1, 1, z_offset],      #6
-        [x_start, 1, z_offset],    #7
+        [0, 0, 0],          # 0
+        [1, 0, 0],          # 1
+        [1, 1, 0],          # 2
+        [0, 1, 0],          # 3
+        [0, 0, z_offset],  # 4
+        [1, 0, z_offset],  # 5
+        [1, 1, z_offset],  # 6
+        [0, 1, z_offset],  # 7
     ]
     )
 
@@ -44,26 +43,26 @@ def render_virtual_object(img, x_start, y_start, x_end, y_end, quad):
         (1, 2),
         (2, 3),
         (3, 0),
-        (0, 4), # bridge
-        (1, 5), # bridge
-        (2, 6), # bridge
-        (3, 7), # bridge
+        (0, 4),  # bridge
+        (1, 5),  # bridge
+        (2, 6),  # bridge
+        (3, 7),  # bridge
         (4, 5),
         (5, 6),
         (6, 7),
         (7, 4),
-       ]
+    ]
 
     color_lines = (0, 0, 0)
 
     # define quad plane in 3D coordinates with z = 0
     quad_3d = np.float32([[x_start, y_start, 0], [x_end, y_start, 0],
-                [x_end, y_end, 0], [x_start, y_end, 0]])
+                          [x_end, y_end, 0], [x_start, y_end, 0]])
 
     h, w = img.shape[:2]
     # define intrinsic camera parameter
-    K = np.float64([[w, 0, 0.5*(w-1)],
-                    [0, w, 0.5*(h-1)],
+    K = np.float64([[w, 0, 0.5 * (w - 1)],
+                    [0, w, 0.5 * (h - 1)],
                     [0, 0, 1.0]])
 
     # find object pose from 3D-2D point correspondences of the 3d quad using Levenberg-Marquardt optimization
@@ -96,7 +95,6 @@ def render_virtual_object(img, x_start, y_start, x_end, y_end, quad):
     for i, j in edges:
         (x_start, y_start), (x_end, y_end) = verts[i], verts[j]
         cv2.line(img, (int(x_start), int(y_start)), (int(x_end), int(y_end)), color_lines, 2)
-
 
 
 cap = cv2.VideoCapture(0)
@@ -152,12 +150,11 @@ while True:
     # YOUR CODE HERE
     h1, w1 = markerImg.shape[:2]
     quad = np.array(
-    [np.array([0, 0], dtype=np.float32), ## UL
-    np.array([0, h1], dtype=np.float32), ## UR
-    np.array([w1, h1], dtype=np.float32), ## LR
-    np.array([w1, 0], dtype=np.float32)] ## LL
+        [np.array([0, 0], dtype=np.float32),  ## UL
+         np.array([0, h1], dtype=np.float32),  ## UR
+         np.array([w1, h1], dtype=np.float32),  ## LR
+         np.array([w1, 0], dtype=np.float32)]  ## LL
     )
-
 
     # perspectiveTransform needs a 3-dimensional array
     quad = np.array([quad])
@@ -175,4 +172,3 @@ while True:
     key = cv2.waitKey(10)
     if key == ord('q'):
         break
-
