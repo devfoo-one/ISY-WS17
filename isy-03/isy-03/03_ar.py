@@ -25,7 +25,7 @@ def render_virtual_object(img, x_start, y_start, x_end, y_end, quad):
     # define vertices, edges and colors of your 3D object, e.g. cube
 
     # YOUR CODE HERE
-    z_offset = 1
+    z_offset = 0.5
     vertices = np.float32([
         [0, 0, 0],          # 0
         [1, 0, 0],          # 1
@@ -78,7 +78,8 @@ def render_virtual_object(img, x_start, y_start, x_end, y_end, quad):
 
     # transform vertices: scale and translate form 0 - 1, in window size of the marker
     scale = [x_end-x_start, y_end-y_start, x_end-x_start]
-    trans = [x_start, y_start, -x_end-x_start]
+    # trans = [x_start, y_start, -x_end-x_start]
+    trans = [x_start, y_start, 0]
 
     verts = scale * vertices + trans
 
@@ -102,7 +103,7 @@ cv2.namedWindow('Interactive Systems: AR Tracking')
 while True:
     # YOUR CODE
     _, vis = cap.read()
-    # vis = cv2.imread('DEBUGIMAGE.jpg') ## TODO REMOVE ME DEBUG!
+    # vis = cv2.imread('DEBUGIMAGE.jpg') ## LOAD DEBUG IMAGE
     # detect and compute descriptor in camera image
     keypointsFrame, descriptorsFrame = sift.detectAndCompute(vis, None)
     if descriptorsMarker is None or descriptorsFrame == None:
@@ -135,9 +136,11 @@ while True:
     # H - homography matrix
     # status - status about inliers and outliers for the plane mapping
     # YOUR CODE
-    (H, status) = cv2.findHomography(p0, p1, cv2.RANSAC)
+    (H, status) = cv2.findHomography(p0, p1, cv2.RANSAC) # TODO: WHAT DOES THE THRESHOLD DO?
 
     # on the basis of the status object we can now filter RANSAC outliers
+    if status == None:
+        continue
     mask = status.ravel() != 0
     if mask.sum() < min_matches:
         cv2.imshow('Interactive Systems: AR Tracking', vis)
