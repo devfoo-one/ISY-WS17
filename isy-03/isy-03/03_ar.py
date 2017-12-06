@@ -103,7 +103,6 @@ cv2.namedWindow('Interactive Systems: AR Tracking')
 while True:
     # YOUR CODE
     _, vis = cap.read()
-    # vis = cv2.imread('DEBUGIMAGE.jpg') ## LOAD DEBUG IMAGE
     # detect and compute descriptor in camera image
     keypointsFrame, descriptorsFrame = sift.detectAndCompute(vis, None)
     if descriptorsMarker is None or descriptorsFrame == None:
@@ -119,6 +118,9 @@ while True:
     # early break
     if len(matches) < min_matches:
         cv2.imshow('Interactive Systems: AR Tracking', vis)
+        key = cv2.waitKey(10)
+        if key == ord('q'):
+            break
         continue
 
     # extract 2d points from matches data structure
@@ -130,13 +132,16 @@ while True:
     # we need at least 4 match points to find a homography matrix
     if len(p0) < 4:
         cv2.imshow('Interactive Systems: AR Tracking', vis)
+        key = cv2.waitKey(10)
+        if key == ord('q'):
+            break
         continue
 
     # find homography using p0 and p1, returning H and status
     # H - homography matrix
     # status - status about inliers and outliers for the plane mapping
     # YOUR CODE
-    (H, status) = cv2.findHomography(p0, p1, cv2.RANSAC) # TODO: WHAT DOES THE THRESHOLD DO?
+    (H, status) = cv2.findHomography(p0, p1, cv2.RANSAC,4.0)
 
     # on the basis of the status object we can now filter RANSAC outliers
     if status == None:
@@ -144,6 +149,9 @@ while True:
     mask = status.ravel() != 0
     if mask.sum() < min_matches:
         cv2.imshow('Interactive Systems: AR Tracking', vis)
+        key = cv2.waitKey(10)
+        if key == ord('q'):
+            break
         continue
 
     # take only inliers - mask of Outlier/Inlier
@@ -167,6 +175,10 @@ while True:
 
     # render quad in image plane and feature points as circle using cv2.polylines + cv2.circle
     # YOUR CODE HERE
+    cv2.polylines(vis,[quad.astype(dtype=np.int)] , isClosed=True, color=(0,0,255), thickness=3)
+    for fp1 in p1:
+        fp1 = fp1.astype(np.int)
+        cv2.circle(vis, (fp1[0], fp1[1]), 10, (0, 255, 0))
 
     # render virtual object on top of quad
     render_virtual_object(vis, 0, 0, h1, w1, quad)
