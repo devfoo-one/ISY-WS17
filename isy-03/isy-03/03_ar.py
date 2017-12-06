@@ -141,7 +141,7 @@ while True:
     # H - homography matrix
     # status - status about inliers and outliers for the plane mapping
     # YOUR CODE
-    (H, status) = cv2.findHomography(p0, p1, cv2.RANSAC,4.0)
+    (H, status) = cv2.findHomography(p0, p1, cv2.RANSAC, 4.0)
 
     # on the basis of the status object we can now filter RANSAC outliers
     if status == None:
