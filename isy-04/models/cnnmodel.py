@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dropout, Convolution2D, MaxPooling2D, Flatten, Dense, Activation
+from keras.layers import Dropout, Convolution2D, MaxPooling2D, Flatten, Dense, Activation, Conv2D
 
 
 class CNNModel:
@@ -19,5 +19,17 @@ class CNNModel:
 
     @staticmethod
     def load_model(classes=10):
-        # TODO build your own model here
+        model = Sequential()
+        model.add(Conv2D(filters=32, kernel_size=(3,3), activation='relu', padding='same', input_shape=(28,28,1)))
+        model.add(Conv2D(filters=32, kernel_size=1, activation='relu'))
+        model.add(MaxPooling2D((2,2)))
+        model.add(Dropout(0.25))
+        model.add(Conv2D(filters=64, kernel_size=(3,3), activation='relu', padding='same'))
+        model.add(Conv2D(filters=64, kernel_size=1, activation='relu'))
+        model.add(MaxPooling2D((2,2)))
+        model.add(Dropout(0.25))
+        model.add(Flatten())
+        model.add(Dense(units=512, activation='relu'))
+        model.add(Dense(units=10, activation='softmax'))
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         return model
