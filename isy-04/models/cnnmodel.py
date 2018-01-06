@@ -30,6 +30,6 @@ class CNNModel:
         model.add(Dropout(0.25))
         model.add(Flatten())
         model.add(Dense(units=512, activation='relu'))
-        model.add(Dense(units=10, activation='softmax'))
+        model.add(Dense(units=classes, activation='softmax'))
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         return model
