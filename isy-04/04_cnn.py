@@ -1,10 +1,11 @@
 import numpy as np
 from utils import mnist_reader
 from utils import plot_utils
+from matplotlib import pyplot as plt
 
 from keras.utils import np_utils
-# from models.cnnmodel import CNNModel
-from models.fcmodel_solution import FCModel
+from models.cnnmodel import CNNModel
+# from models.fcmodel_solution import FCModel
 
 
 
@@ -58,15 +59,15 @@ Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 # we need to reshape the input data to fit keras.io input matrix format
-X_train, X_test = FCModel.reshape_input_data(X_train, X_test)
-# X_train, X_test = CNNModel.reshape_input_data(X_train, X_test)
+# X_train, X_test = FCModel.reshape_input_data(X_train, X_test)
+X_train, X_test = CNNModel.reshape_input_data(X_train, X_test)
 
 # hyperparameter
 nb_epoch = 5
 batch_size = 128
 
-# model = CNNModel.load_model(nb_classes)
-model = FCModel.load_model(nb_classes)
+model = CNNModel.load_model(nb_classes)
+# model = FCModel.load_model(nb_classes)
 history = model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(X_test, Y_test))
 
 
