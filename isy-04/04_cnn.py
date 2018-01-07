@@ -62,18 +62,18 @@ Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 # we need to reshape the input data to fit keras.io input matrix format
-X_train, X_test = FCModel.reshape_input_data(X_train, X_test)
+# X_train, X_test = FCModel.reshape_input_data(X_train, X_test)
 # X_train, X_test = CNNModel.reshape_input_data(X_train, X_test)
-# X_train, X_test = VGGNet.reshape_input_data(X_train, X_test)
+X_train, X_test = VGGNet.reshape_input_data(X_train, X_test)
 # X_train, X_test = FCModelSlim.reshape_input_data(X_train, X_test)
 
 # hyperparameter
-nb_epoch = 20
+nb_epoch = 10
 batch_size = 128
 
 # model = CNNModel.load_model(nb_classes)
-# model = VGGNet.load_model(nb_classes)
-model = FCModel.load_model(nb_classes)
+model = VGGNet.load_model(nb_classes)
+# model = FCModel.load_model(nb_classes)
 # model = FCModelSlim.load_model(nb_classes)
 history = model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(X_test, Y_test))
 
